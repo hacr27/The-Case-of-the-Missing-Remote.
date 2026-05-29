@@ -1,123 +1,258 @@
-import time
-import sys
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blanket Fort Detective ✨</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #1a1a2e;
+            color: #e0e0e5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .game-container {
+            width: 100%;
+            max-width: 600px;
+            background-color: #162447;
+            border: 3px solid #e43f5a;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        h1 {
+            text-align: center;
+            color: #e43f5a;
+            margin-top: 0;
+            text-shadow: 2px 2px #000;
+        }
+        .status-panel {
+            display: flex;
+            justify-content: space-between;
+            background-color: #1f4068;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            border: 1px solid #e43f5a;
+        }
+        .story-text {
+            min-height: 150px;
+            background-color: #0f172a;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            border-left: 4px solid #e43f5a;
+            white-space: pre-line;
+        }
+        .choices-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        button {
+            background-color: #1f4068;
+            color: #e0e0e5;
+            border: 2px solid #e43f5a;
+            padding: 12px;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 1rem;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+        }
+        button:hover {
+            background-color: #e43f5a;
+            color: #fff;
+            transform: translateX(5px);
+        }
+        button:disabled {
+            background-color: #111;
+            border-color: #333;
+            color: #555;
+            cursor: not-allowed;
+            transform: none;
+        }
+    </style>
+</head>
+<body>
 
-class BlanketFortDetective:
-    def __init__(self):
-        self.inventory = []
-        self.location = "Main Cushion Fort"
-        self.pip_fed = False
-        self.game_over = False
+<div class="game-container">
+    <h1>✨ BLANKET FORT DETECTIVE ✨</h1>
+    
+    <div class="status-panel">
+        <div>📍 <strong>Location:</strong> <span id="location">Main Cushion Fort</span></div>
+        <div>🎒 <strong>Inventory:</strong> <span id="inventory">Empty</span></div>
+    </div>
 
-    def slow_print(self, text, delay=0.03):
-        """Prints text letter by letter for a nostalgic game feel."""
-        for char in text:
-            sys.stdout.write(char)
-            sys.stdout.flush()
-            time.sleep(delay)
-        print()
-        time.sleep(0.3)
-
-    def play(self):
-        print("\n" + "="*50)
-        self.slow_print("✨ BLANKET FORT DETECTIVE ✨", 0.05)
-        print("="*50)
-        self.slow_print("You are Barnaby, a plush bear wearing a folded sticky-note fedora.")
-        self.slow_print("The TV remote has vanished, and Saturday morning cartoons are in jeopardy.")
-        self.slow_print("It's time to find the remote and save the fort's cozy morning.\n")
+    <div class="story-text" id="story">
+        You are Barnaby, a plush bear wearing a folded sticky-note fedora. 
         
-        while not self.game_over:
-            self.action_prompt()
+        The TV remote has vanished, and Saturday morning cartoons are in jeopardy. It's time to find the remote and save the fort's cozy morning.
+    </div>
 
-    def action_prompt(self):
-        print(f"\n--- Current Location: {self.location} ---")
-        print("What would you like to do?")
+    <div class="choices-container" id="choices">
+        </div>
+</div>
+
+<script>
+    // Game State
+    let state = {
+        location: "Main Cushion Fort",
+        inventory: [],
+        pipFed: false,
+        gameOver: false
+    };
+
+    const storyEl = document.getElementById('story');
+    const locationEl = document.getElementById('location');
+    const inventoryEl = document.getElementById('inventory');
+    const choicesEl = document.getElementById('choices');
+
+    // Update UI elements
+    function updateUI(text, choices) {
+        storyEl.textContent = text;
+        locationEl.textContent = state.location;
+        inventoryEl.textContent = state.inventory.length > 0 ? state.inventory.join(', ') : 'Empty';
         
-        # --- LOCATION: MAIN CUSHION FORT ---
-        if self.location == "Main Cushion Fort":
-            print("1. Search between the couch cushions with your flashlight")
-            print("2. Crawl to the Kitchen Counter Cliffs")
-            print("3. Push through the fairy lights to Professor Scales' Laboratory")
-            
-            choice = input("\nEnter a number > ")
-            if choice == "1":
-                if "Cheerio" not in self.inventory:
-                    self.slow_print("\nYou click on your flashlight and peer into the deep, dark crumb-abyss...")
-                    self.slow_print("Aha! You found a perfectly intact Honey Nut Cheerio. This could be useful.")
-                    self.inventory.append("Cheerio")
-                else:
-                    self.slow_print("\nJust some lint and a rogue Lego piece down here now. Better keep moving.")
-            elif choice == "2":
-                self.location = "Kitchen Counter Cliffs"
-                self.slow_print("\nYou crawl through a tunnel made of fitted sheets...")
-            elif choice == "3":
-                self.location = "Professor Scales' Laboratory"
-                self.slow_print("\nYou brave the glowing fairy light barrier...")
-            else:
-                print("Invalid choice. Try again, Detective.")
-                
-        # --- LOCATION: KITCHEN COUNTER CLIFFS ---
-        elif self.location == "Kitchen Counter Cliffs":
-            if not self.pip_fed:
-                self.slow_print("\nPip the wind-up mouse is pacing nervously near a stack of Tupperware.")
-                self.slow_print("'I saw someone take it! But my gears are slowing down... I'm too hungry to speak!'")
-                print("1. Give Pip a snack from your inventory")
-                print("2. Go back to the Main Cushion Fort")
-                
-                choice = input("\nEnter a number > ")
-                if choice == "1":
-                    if "Cheerio" in self.inventory:
-                        self.slow_print("\nYou offer Pip the Cheerio. He nibbles it at lightning speed!")
-                        self.slow_print("'Thank you, Barnaby! I saw Professor Scales dragging a heavy black rectangle toward his lab!'")
-                        self.slow_print("Clue acquired: The Dinosaur Did It.")
-                        self.pip_fed = True
-                        self.inventory.remove("Cheerio")
-                    else:
-                        self.slow_print("\nYou search your fuzzy pockets, but you don't have any snacks. Better search the fort.")
-                elif choice == "2":
-                    self.location = "Main Cushion Fort"
-                else:
-                    print("Invalid choice.")
-            else:
-                self.slow_print("\nPip is happily brushing Cheerio dust off his whiskers.")
-                self.slow_print("'Good luck confronting the Professor, Barnaby!'")
-                print("1. Go back to the Main Cushion Fort")
-                
-                choice = input("\nEnter a number > ")
-                if choice == "1":
-                    self.location = "Main Cushion Fort"
+        choicesEl.innerHTML = '';
+        
+        if (!state.gameOver) {
+            choices.forEach(choice => {
+                const btn = document.createElement('button');
+                btn.textContent = choice.text;
+                btn.onclick = choice.action;
+                choicesEl.appendChild(btn);
+            });
+        } else {
+            const restartBtn = document.createElement('button');
+            restartBtn.textContent = "🔄 Play Again";
+            restartBtn.onclick = resetGame;
+            choicesEl.appendChild(restartBtn);
+        }
+    }
 
-        # --- LOCATION: PROFESSOR SCALES' LABORATORY ---
-        elif self.location == "Professor Scales' Laboratory":
-            self.slow_print("\nProfessor Scales (a knitted green dinosaur) is adjusting a complex cardboard machine.")
-            self.slow_print("The missing TV remote is mounted on top, emitting a glowing red infrared beam!")
-            
-            if self.pip_fed:
-                print("1. Confront Professor Scales with Pip's testimony")
-                print("2. Sneak back to the Main Cushion Fort")
-                
-                choice = input("\nEnter a number > ")
-                if choice == "1":
-                    self.slow_print("\nYou push your sticky-note hat up and present the evidence.")
-                    self.slow_print("Professor Scales sighs. 'I didn't steal it! I just needed a laser defense system against imaginary space aliens!'")
-                    self.slow_print("You offer him a shiny foil wrapper from your pocket to use instead. He happily accepts.")
-                    self.slow_print("\n*** YOU RECOVERED THE REMOTE! ***")
-                    self.slow_print("The cartoons are turned on, and the entire stuffed animal crew gathers on the soft playmats.")
-                    self.slow_print("✨ CASE CLOSED. Time for a group nap. ✨")
-                    self.game_over = True
-                elif choice == "2":
-                    self.location = "Main Cushion Fort"
-            else:
-                self.slow_print("\nYou see the remote, but you don't have enough evidence to accuse a respected Professor.")
-                self.slow_print("You should probably find a witness before making your move.")
-                print("1. Go back to the Main Cushion Fort")
-                
-                choice = input("\nEnter a number > ")
-                if choice == "1":
-                    self.location = "Main Cushion Fort"
+    // Scene Router
+    function renderScene() {
+        if (state.location === "Main Cushion Fort") {
+            let text = "You stand in the center of the Main Cushion Fort. Tunnels of duvets stretch out in every direction.";
+            let choices = [];
 
-if __name__ == '__main__':
-    try:
-        game = BlanketFortDetective()
-        game.play()
-    except KeyboardInterrupt:
-        print("\n\nGame exited. The mystery remains unsolved...")
+            choices.push({
+                text: "🔍 Search between the couch cushions with your flashlight",
+                action: () => {
+                    if (!state.inventory.includes("Cheerio")) {
+                        state.inventory.push("Cheerio");
+                        updateUI("You click on your flashlight and peer into the deep, dark crumb-abyss...\n\nAha! You found a perfectly intact Honey Nut Cheerio! This could be a solid bribe.", [
+                            { text: "Back to the center of the fort", action: renderScene }
+                        ]);
+                    } else {
+                        updateUI("Just some lint and a rogue Lego piece down here now. Better keep moving.", [
+                            { text: "Back to the center of the fort", action: renderScene }
+                        ]);
+                    }
+                }
+            });
+
+            choices.push({
+                text: "👟 Crawl to the Kitchen Counter Cliffs",
+                action: () => { state.location = "Kitchen Counter Cliffs"; renderScene(); }
+            });
+
+            choices.push({
+                text: "🦖 Push through the fairy lights to Professor Scales' Laboratory",
+                action: () => { state.location = "Professor Scales' Laboratory"; renderScene(); }
+            });
+
+            updateUI(text, choices);
+        } 
+        
+        else if (state.location === "Kitchen Counter Cliffs") {
+            let choices = [];
+            
+            if (!state.pipFed) {
+                let text = "Pip the wind-up mouse is pacing nervously near a stack of Tupperware.\n\n'I saw someone take it! But my gears are slowing down... I'm too hungry to speak!'";
+                
+                if (state.inventory.includes("Cheerio")) {
+                    choices.push({
+                        text: "🥣 Give Pip the Honey Nut Cheerio",
+                        action: () => {
+                            state.pipFed = true;
+                            state.inventory = state.inventory.filter(item => item !== "Cheerio");
+                            updateUI("You offer Pip the Cheerio. He nibbles it at lightning speed!\n\n'Thank you, Barnaby! I saw Professor Scales dragging a heavy black rectangle toward his lab!'\n\n👉 Clue acquired: The Dinosaur Did It.", [
+                                { text: "Continue", action: renderScene }
+                            ]);
+                        }
+                    });
+                } else {
+                    choices.push({
+                        text: "❌ (Requires a Snack) Bribe Pip for info",
+                        action: () => {} // Button is effectively a hint
+                    });
+                }
+            } else {
+                var text = "Pip is happily brushing Cheerio dust off his whiskers.\n\n'Good luck confronting the Professor, Barnaby!'";
+            }
+
+            choices.push({
+                text: "⬅️ Go back to the Main Cushion Fort",
+                action: () => { state.location = "Main Cushion Fort"; renderScene(); }
+            });
+
+            updateUI(text, choices);
+        } 
+        
+        else if (state.location === "Professor Scales' Laboratory") {
+            let text = "Professor Scales (a knitted green dinosaur) is adjusting a complex cardboard machine.\n\nThe missing TV remote is mounted on top, emitting a glowing red infrared beam!";
+            let choices = [];
+
+            if (state.pipFed) {
+                choices.push({
+                    text: "⚖️ Confront Professor Scales with Pip's testimony",
+                    action: () => {
+                        state.gameOver = true;
+                        updateUI("You push your sticky-note hat up and present the evidence.\n\nProfessor Scales sighs. 'I didn't steal it! I just needed a laser defense system against imaginary space aliens!'\n\nYou offer him a shiny foil wrapper from your pocket to use instead. He happily accepts.\n\n🏆 *** YOU RECOVERED THE REMOTE! *** 🏆\n\nThe cartoons are turned on, and the entire stuffed animal crew gathers on the soft playmats.\n\n✨ CASE CLOSED. Time for a cozy group nap. ✨", []);
+                    }
+                });
+            } else {
+                choices.push({
+                    text: "🔒 Accuse the Professor (Needs more evidence)",
+                    action: () => {
+                        updateUI("You see the remote, but you don't have enough evidence to accuse a respected Professor. You should probably find a witness first.", [
+                            { text: "Step back", action: renderScene }
+                        ]);
+                    }
+                });
+            }
+
+            choices.push({
+                text: "⬅️ Sneak back to the Main Cushion Fort",
+                action: () => { state.location = "Main Cushion Fort"; renderScene(); }
+            });
+
+            updateUI(text, choices);
+        }
+    }
+
+    function resetGame() {
+        state.location = "Main Cushion Fort";
+        state.inventory = [];
+        state.pipFed = false;
+        state.gameOver = false;
+        renderScene();
+    }
+
+    // Start the game loop on load
+    renderScene();
+</script>
+
+</body>
+</html>
