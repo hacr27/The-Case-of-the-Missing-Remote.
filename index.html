@@ -1,0 +1,123 @@
+import time
+import sys
+
+class BlanketFortDetective:
+    def __init__(self):
+        self.inventory = []
+        self.location = "Main Cushion Fort"
+        self.pip_fed = False
+        self.game_over = False
+
+    def slow_print(self, text, delay=0.03):
+        """Prints text letter by letter for a nostalgic game feel."""
+        for char in text:
+            sys.stdout.write(char)
+            sys.stdout.flush()
+            time.sleep(delay)
+        print()
+        time.sleep(0.3)
+
+    def play(self):
+        print("\n" + "="*50)
+        self.slow_print("✨ BLANKET FORT DETECTIVE ✨", 0.05)
+        print("="*50)
+        self.slow_print("You are Barnaby, a plush bear wearing a folded sticky-note fedora.")
+        self.slow_print("The TV remote has vanished, and Saturday morning cartoons are in jeopardy.")
+        self.slow_print("It's time to find the remote and save the fort's cozy morning.\n")
+        
+        while not self.game_over:
+            self.action_prompt()
+
+    def action_prompt(self):
+        print(f"\n--- Current Location: {self.location} ---")
+        print("What would you like to do?")
+        
+        # --- LOCATION: MAIN CUSHION FORT ---
+        if self.location == "Main Cushion Fort":
+            print("1. Search between the couch cushions with your flashlight")
+            print("2. Crawl to the Kitchen Counter Cliffs")
+            print("3. Push through the fairy lights to Professor Scales' Laboratory")
+            
+            choice = input("\nEnter a number > ")
+            if choice == "1":
+                if "Cheerio" not in self.inventory:
+                    self.slow_print("\nYou click on your flashlight and peer into the deep, dark crumb-abyss...")
+                    self.slow_print("Aha! You found a perfectly intact Honey Nut Cheerio. This could be useful.")
+                    self.inventory.append("Cheerio")
+                else:
+                    self.slow_print("\nJust some lint and a rogue Lego piece down here now. Better keep moving.")
+            elif choice == "2":
+                self.location = "Kitchen Counter Cliffs"
+                self.slow_print("\nYou crawl through a tunnel made of fitted sheets...")
+            elif choice == "3":
+                self.location = "Professor Scales' Laboratory"
+                self.slow_print("\nYou brave the glowing fairy light barrier...")
+            else:
+                print("Invalid choice. Try again, Detective.")
+                
+        # --- LOCATION: KITCHEN COUNTER CLIFFS ---
+        elif self.location == "Kitchen Counter Cliffs":
+            if not self.pip_fed:
+                self.slow_print("\nPip the wind-up mouse is pacing nervously near a stack of Tupperware.")
+                self.slow_print("'I saw someone take it! But my gears are slowing down... I'm too hungry to speak!'")
+                print("1. Give Pip a snack from your inventory")
+                print("2. Go back to the Main Cushion Fort")
+                
+                choice = input("\nEnter a number > ")
+                if choice == "1":
+                    if "Cheerio" in self.inventory:
+                        self.slow_print("\nYou offer Pip the Cheerio. He nibbles it at lightning speed!")
+                        self.slow_print("'Thank you, Barnaby! I saw Professor Scales dragging a heavy black rectangle toward his lab!'")
+                        self.slow_print("Clue acquired: The Dinosaur Did It.")
+                        self.pip_fed = True
+                        self.inventory.remove("Cheerio")
+                    else:
+                        self.slow_print("\nYou search your fuzzy pockets, but you don't have any snacks. Better search the fort.")
+                elif choice == "2":
+                    self.location = "Main Cushion Fort"
+                else:
+                    print("Invalid choice.")
+            else:
+                self.slow_print("\nPip is happily brushing Cheerio dust off his whiskers.")
+                self.slow_print("'Good luck confronting the Professor, Barnaby!'")
+                print("1. Go back to the Main Cushion Fort")
+                
+                choice = input("\nEnter a number > ")
+                if choice == "1":
+                    self.location = "Main Cushion Fort"
+
+        # --- LOCATION: PROFESSOR SCALES' LABORATORY ---
+        elif self.location == "Professor Scales' Laboratory":
+            self.slow_print("\nProfessor Scales (a knitted green dinosaur) is adjusting a complex cardboard machine.")
+            self.slow_print("The missing TV remote is mounted on top, emitting a glowing red infrared beam!")
+            
+            if self.pip_fed:
+                print("1. Confront Professor Scales with Pip's testimony")
+                print("2. Sneak back to the Main Cushion Fort")
+                
+                choice = input("\nEnter a number > ")
+                if choice == "1":
+                    self.slow_print("\nYou push your sticky-note hat up and present the evidence.")
+                    self.slow_print("Professor Scales sighs. 'I didn't steal it! I just needed a laser defense system against imaginary space aliens!'")
+                    self.slow_print("You offer him a shiny foil wrapper from your pocket to use instead. He happily accepts.")
+                    self.slow_print("\n*** YOU RECOVERED THE REMOTE! ***")
+                    self.slow_print("The cartoons are turned on, and the entire stuffed animal crew gathers on the soft playmats.")
+                    self.slow_print("✨ CASE CLOSED. Time for a group nap. ✨")
+                    self.game_over = True
+                elif choice == "2":
+                    self.location = "Main Cushion Fort"
+            else:
+                self.slow_print("\nYou see the remote, but you don't have enough evidence to accuse a respected Professor.")
+                self.slow_print("You should probably find a witness before making your move.")
+                print("1. Go back to the Main Cushion Fort")
+                
+                choice = input("\nEnter a number > ")
+                if choice == "1":
+                    self.location = "Main Cushion Fort"
+
+if __name__ == '__main__':
+    try:
+        game = BlanketFortDetective()
+        game.play()
+    except KeyboardInterrupt:
+        print("\n\nGame exited. The mystery remains unsolved...")
